@@ -1,0 +1,70 @@
+﻿<UserControl x:Class="VisualMute.Shell.Keybind.KeybindView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:keybind="clr-namespace:VisualMute.Shell.Keybind"
+             mc:Ignorable="d"
+             Width="200"
+             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance keybind:KeybindViewModel}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Border
+            Margin="5"
+            Padding="5"
+            BorderBrush="Black"
+            BorderThickness=".5">
+            <Grid                
+                HorizontalAlignment="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Label
+                    Grid.Row="0"
+                    Content="Modifiers:" />
+                <StackPanel
+                    Grid.Row="1"
+                    Margin="10,0,0,0"
+                    Orientation="Horizontal">
+                    <CheckBox Margin="3" Content="Ctrl" />
+                    <CheckBox Margin="3" Content="Shift" />
+                    <CheckBox Margin="3" Content="Alt" />
+                </StackPanel>
+                <Label
+                    Grid.Row="2"
+                    Content="Key:" />
+                <ComboBox
+                    Grid.Row="3"
+                    Margin="10,0,0,0"
+                    Width="150"               
+                    SelectedItem="{Binding SelectedKey}"
+                    HorizontalAlignment="Left"
+                    ItemsSource="{Binding Keys}" />
+            </Grid>
+
+        </Border>
+        <Grid
+            Height="25"
+            Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Button
+                Margin="2"
+                Content="Save"                
+                Name="Save" />
+            <Button
+                Grid.Column="1"
+                Margin="2"
+                Content="Cancel"
+                Name="Cancel" />
+        </Grid>
+    </Grid>
+</UserControl>

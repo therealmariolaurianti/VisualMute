@@ -183,6 +183,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Bootstrapper\AppBootstrapper.cs" />
+    <Compile Include="Shell\Keybind\KeybindView.xaml.cs">
+      <DependentUpon>KeybindView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Shell\Keybind\KeybindViewModel.cs" />
     <Compile Include="Shell\ShellView.xaml.cs">
       <DependentUpon>ShellView.xaml</DependentUpon>
     </Compile>
@@ -195,6 +199,7 @@
     <Compile Include="Workers\Extensions.cs" />
     <Compile Include="Workers\GraphPlotter.cs" />
     <Compile Include="Workers\HotKeyManager.cs" />
+    <Compile Include="Workers\SettingsHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -224,6 +229,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Shell\Keybind\KeybindView.xaml" />
     <Page Include="Shell\ShellView.xaml" />
   </ItemGroup>
   <ItemGroup>

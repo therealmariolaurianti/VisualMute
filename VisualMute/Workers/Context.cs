@@ -26,14 +26,22 @@ namespace VisualMute.Workers
 
         public MMDevice PrimaryDevice { get; private set; }
 
-        public static Keys KeyBind => Settings.Default.KeyBind;
+        public Keys KeyBind { get; private set; }
 
         private void Initialize()
         {
             CreateIcon();
             UpdateMicStatus();
             StartTimer();
-            RegisterHotkeys();
+            SetupHotkeys();
+        }
+
+        private void SetupHotkeys()
+        {
+            _hkManager = new HotkeyManager(this);
+            KeyBind = Settings.Default.KeyBind;
+
+            RegisterHotkeys(KeyBind);
         }
 
         [DllImport("user32.dll")]
@@ -42,11 +50,17 @@ namespace VisualMute.Workers
         [DllImport("user32.dll")]
         public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
-
-        private void RegisterHotkeys()
+        public void UpdateKeyBind(Keys keyBind)
         {
-            _hkManager = new HotkeyManager(this);
-            RegisterHotKey(_hkManager.Handle, _muteCode, 0, (int) KeyBind);
+            UnregisterHotKey(_hkManager.Handle, _muteCode);
+            RegisterHotkeys(keyBind);
+
+            KeyBind = keyBind;
+        }
+
+        private void RegisterHotkeys(Keys keyBind)
+        {
+            RegisterHotKey(_hkManager.Handle, _muteCode, 0, (int) keyBind);
         }
 
         private void CreateIcon()

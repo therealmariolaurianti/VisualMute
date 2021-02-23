@@ -4,6 +4,7 @@ using System.Windows.Media;
 using Accord;
 using Caliburn.Micro;
 using ScottPlot;
+using VisualMute.Shell.Keybind;
 using VisualMute.Workers;
 using Style = ScottPlot.Style;
 
@@ -17,11 +18,12 @@ namespace VisualMute.Shell
         private readonly GraphPlotter _graphPlotter;
         private bool _isMuted;
 
-        public ShellViewModel(GraphPlotter graphPlotter, Context context)
+        public ShellViewModel(GraphPlotter graphPlotter, Context context, IWindowManager windowManager)
         {
             _graphPlotter = graphPlotter;
 
             _context = context;
+            _windowManager = windowManager;
             _context.MicStatusUpdatedEvent += OnMicStatusUpdatedEvent;
         }
 
@@ -37,7 +39,7 @@ namespace VisualMute.Shell
             }
         }
 
-        public string KeyBind => $"KeyBind: {Context.KeyBind.GetDescription()}";
+        public string KeyBind => $"KeyBind: {_context.KeyBind.GetDescription()}";
 
         public string PrimaryDevice => _context.PrimaryDevice.FriendlyName;
 
@@ -76,6 +78,19 @@ namespace VisualMute.Shell
 
             NotifyOfPropertyChange(nameof(Text));
             NotifyOfPropertyChange(nameof(ForegroundColor));
+        }
+
+        private readonly IWindowManager _windowManager;
+        
+        public void DoChangeKeybind()
+        {
+            var keybindViewModel = new KeybindViewModel();
+            var result = _windowManager.ShowDialog(keybindViewModel);
+            if (!(result is true)) 
+                return;
+            
+            _context.UpdateKeyBind(keybindViewModel.SelectedKey);
+            NotifyOfPropertyChange(nameof(KeyBind));
         }
     }
 }
