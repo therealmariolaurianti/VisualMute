@@ -32,9 +32,18 @@
                     Grid.Row="1"
                     Margin="10,0,0,0"
                     Orientation="Horizontal">
-                    <CheckBox Margin="3" Content="Ctrl" />
-                    <CheckBox Margin="3" Content="Shift" />
-                    <CheckBox Margin="3" Content="Alt" />
+                    <CheckBox 
+                        Name="IsUseControl"
+                        IsEnabled="False"
+                        Margin="3" Content="Ctrl" />
+                    <CheckBox 
+                        Name="IsUseShift"
+                        IsEnabled="False"
+                        Margin="3" Content="Shift" />
+                    <CheckBox 
+                        Name="IsUseAlt"
+                        IsEnabled="False"
+                        Margin="3" Content="Alt" />
                 </StackPanel>
                 <Label
                     Grid.Row="2"

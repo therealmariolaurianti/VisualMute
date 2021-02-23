@@ -17,6 +17,8 @@ namespace VisualMute.Shell.Keybind
             SelectedKey = keybind;
         }
 
+        public Keys NewKeyBind { get; private set; }
+
         public List<Keys> Keys => Enum
             .GetValues(typeof(Keys))
             .Cast<Keys>()
@@ -33,24 +35,36 @@ namespace VisualMute.Shell.Keybind
             }
         }
 
+        public bool IsUseControl { get; set; }
+        public bool IsUseShift { get; set; }
+        public bool IsUseAlt { get; set; }
+
+        public override string DisplayName
+        {
+            get => "";
+            set => throw new NotImplementedException();
+        }
+
         public void Save()
         {
-            SettingsHelper.UpdateApplicationSetting(
-                nameof(Settings.Default.KeyBind),
-                SelectedKey);
-            
+            // NewKeyBind = System.Windows.Forms.Keys.None;
+            // if (IsUseControl)
+            //     NewKeyBind |= System.Windows.Forms.Keys.Control;
+            // if (IsUseShift)
+            //     NewKeyBind |= System.Windows.Forms.Keys.Shift;
+            // if (IsUseAlt)
+            //     NewKeyBind |= System.Windows.Forms.Keys.Alt;
+
+            NewKeyBind = SelectedKey;
+
+            SettingsHelper.UpdateApplicationSetting(nameof(Settings.Default.KeyBind), NewKeyBind);
+
             TryClose(true);
         }
 
         public void Cancel()
         {
             TryClose(false);
-        }
-
-        public override string DisplayName
-        {
-            get => "";
-            set => throw new NotImplementedException();
         }
     }
 }

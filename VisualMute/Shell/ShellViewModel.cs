@@ -89,7 +89,7 @@ namespace VisualMute.Shell
             if (!(result is true))
                 return;
 
-            _context.UpdateKeyBind(keybindViewModel.SelectedKey);
+            _context.UpdateKeyBind(keybindViewModel.NewKeyBind);
             NotifyOfPropertyChange(nameof(KeyBind));
         }
     }
