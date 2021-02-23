@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Media;
+using Accord;
 using Caliburn.Micro;
 using ScottPlot;
 using VisualMute.Workers;
@@ -35,6 +36,8 @@ namespace VisualMute.Shell
                 NotifyOfPropertyChange();
             }
         }
+
+        public string KeyBind => $"KeyBind: {Context.KeyBind.GetDescription()}";
 
         public string PrimaryDevice => _context.PrimaryDevice.FriendlyName;
 

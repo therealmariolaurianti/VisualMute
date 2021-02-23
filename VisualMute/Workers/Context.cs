@@ -29,17 +29,20 @@ namespace VisualMute.Workers
 
         public MMDevice PrimaryDevice { get; private set; }
 
+        public static Keys KeyBind => Keys.F13;
+
         [DllImport("user32.dll")]
         public static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vlc);
 
         [DllImport("user32.dll")]
         public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
+
         private HotkeyManager registerHotkeys()
         {
             var manager = new HotkeyManager(this);
 
-            RegisterHotKey(manager.Handle, MUTE_CODE, 0, (int) Keys.F13);
+            RegisterHotKey(manager.Handle, MUTE_CODE, 0, (int) KeyBind);
 
             return manager;
         }

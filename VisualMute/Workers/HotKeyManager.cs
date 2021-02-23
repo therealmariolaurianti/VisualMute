@@ -6,8 +6,8 @@ namespace VisualMute.Workers
     public class HotkeyManager : NativeWindow, IDisposable
     {
         private readonly Context context;
+        private readonly int _hotKeyConstant = 786;
         private bool _isMuted;
-        private int _hotKeyConstant = 786;
 
         public HotkeyManager(Context context)
         {
@@ -21,7 +21,7 @@ namespace VisualMute.Workers
         }
 
         protected override void WndProc(ref Message m)
-        { 
+        {
             if (m.Msg == _hotKeyConstant)
             {
                 if (_isMuted)
