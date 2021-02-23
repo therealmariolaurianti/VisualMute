@@ -5,8 +5,8 @@ namespace VisualMute.Workers
 {
     public class HotkeyManager : NativeWindow, IDisposable
     {
-        private readonly Context context;
         private readonly int _hotKeyConstant = 786;
+        private readonly Context context;
         private bool _isMuted;
 
         public HotkeyManager(Context context)
@@ -26,12 +26,12 @@ namespace VisualMute.Workers
             {
                 if (_isMuted)
                 {
-                    context.unmuteMic();
+                    context.UnmuteMic();
                     _isMuted = false;
                 }
                 else
                 {
-                    context.muteMic();
+                    context.MuteMic();
                     _isMuted = true;
                 }
             }

@@ -17,8 +17,6 @@
     cal:Message.Attach="[Event Loaded] = [OnWindowLoaded($source, $eventArgs)]"
     WindowStartupLocation="CenterScreen"
     d:DataContext="{d:DesignInstance shell:ShellViewModel}">
-    <Window.Resources>
-    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="75" />

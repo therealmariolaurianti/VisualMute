@@ -10,26 +10,31 @@ namespace VisualMute.Workers
 {
     public class Context
     {
-        public static int MUTE_CODE = 123;
+        private const int _muteCode = 123;
+        private const double _refreshInterval = 1000;
+        private HotkeyManager _hkManager;
 
-        private static readonly double REFRESH_INTERVAL = 1000;
-        private readonly Timer refreshTimer;
-        private readonly NotifyIcon tbIcon;
-        private HotkeyManager hkManager;
+        private NotifyIcon _icon;
+        private Timer _refreshTimer;
 
         public Action<bool> MicStatusUpdatedEvent;
 
         public Context()
         {
-            tbIcon = createIcon();
-            updateMicStatus();
-            refreshTimer = startTimer();
-            hkManager = registerHotkeys();
+            Initialize();
         }
 
         public MMDevice PrimaryDevice { get; private set; }
 
-        public static Keys KeyBind => Keys.F13;
+        public static Keys KeyBind => Settings.Default.KeyBind;
+
+        private void Initialize()
+        {
+            CreateIcon();
+            UpdateMicStatus();
+            StartTimer();
+            RegisterHotkeys();
+        }
 
         [DllImport("user32.dll")]
         public static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vlc);
@@ -38,18 +43,15 @@ namespace VisualMute.Workers
         public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
 
-        private HotkeyManager registerHotkeys()
+        private void RegisterHotkeys()
         {
-            var manager = new HotkeyManager(this);
-
-            RegisterHotKey(manager.Handle, MUTE_CODE, 0, (int) KeyBind);
-
-            return manager;
+            _hkManager = new HotkeyManager(this);
+            RegisterHotKey(_hkManager.Handle, _muteCode, 0, (int) KeyBind);
         }
 
-        private NotifyIcon createIcon()
+        private void CreateIcon()
         {
-            var exitMenuItem = new MenuItem("Exit", handleExit);
+            var exitMenuItem = new MenuItem("Exit", HandleExit);
 
             var icon = new NotifyIcon
             {
@@ -57,85 +59,84 @@ namespace VisualMute.Workers
                 ContextMenu = new ContextMenu(new[] {exitMenuItem})
             };
 
-            icon.DoubleClick += (source, e) => toggleMicStatus();
+            icon.DoubleClick += (source, e) => ToggleMicStatus();
             icon.Visible = true;
 
-            return icon;
+            _icon = icon;
         }
 
-        private Timer startTimer()
+        private void StartTimer()
         {
-            var timer = new Timer(REFRESH_INTERVAL);
-            timer.Elapsed += (source, e) => updateMicStatus();
-            timer.Start();
-            return timer;
+            _refreshTimer = new Timer(_refreshInterval);
+            _refreshTimer.Elapsed += (source, e) => UpdateMicStatus();
+            _refreshTimer.Start();
         }
 
-        public void setMicMuteStatus(bool doMute)
+        private void SetMicMuteStatus(bool doMute)
         {
-            var device = getPrimaryMicDevice();
+            var device = GetPrimaryMicDevice();
 
             if (device != null)
             {
                 device.AudioEndpointVolume.Mute = doMute;
-                updateMicStatus(device);
+                UpdateMicStatus(device);
             }
             else
             {
-                updateMicStatus(null);
+                UpdateMicStatus(null);
             }
         }
 
-        public void muteMic()
+        public void MuteMic()
         {
-            setMicMuteStatus(true);
+            SetMicMuteStatus(true);
             MicStatusUpdatedEvent?.Invoke(true);
         }
 
-        public void unmuteMic()
+        public void UnmuteMic()
         {
-            setMicMuteStatus(false);
+            SetMicMuteStatus(false);
             MicStatusUpdatedEvent?.Invoke(false);
         }
 
-        private void toggleMicStatus()
+        private void ToggleMicStatus()
         {
-            var device = getPrimaryMicDevice();
+            var device = GetPrimaryMicDevice();
 
             if (device != null)
             {
                 device.AudioEndpointVolume.Mute = !device.AudioEndpointVolume.Mute;
-                updateMicStatus(device);
+                UpdateMicStatus(device);
             }
             else
             {
-                updateMicStatus(null);
+                UpdateMicStatus(null);
             }
         }
 
-        private void updateMicStatus()
+        private void UpdateMicStatus()
         {
-            var device = getPrimaryMicDevice();
-            updateMicStatus(device);
+            var device = GetPrimaryMicDevice();
+            UpdateMicStatus(device);
         }
 
-        private void updateMicStatus(MMDevice device)
+        private void UpdateMicStatus(MMDevice device)
         {
             if (device == null || device.AudioEndpointVolume.Mute)
-                tbIcon.Icon = Resources.mic_off;
+                _icon.Icon = Resources.mic_off;
             else
-                tbIcon.Icon = Resources.mic_on;
+                _icon.Icon = Resources.mic_on;
 
-            disposeDevice(device);
+            DisposeDevice(device);
         }
 
-        private MMDevice getPrimaryMicDevice()
+        private MMDevice GetPrimaryMicDevice()
         {
             var enumerator = new MMDeviceEnumerator();
             var result = enumerator.GetDefaultAudioEndpoint(DataFlow.Capture, Role.Communications);
             enumerator.Dispose();
 
-            tbIcon.Text = result.DeviceFriendlyName;
+            _icon.Text = result.DeviceFriendlyName;
 
             if (PrimaryDevice is null || PrimaryDevice != result)
                 PrimaryDevice = result;
@@ -143,19 +144,19 @@ namespace VisualMute.Workers
             return PrimaryDevice;
         }
 
-        private void disposeDevice(MMDevice device)
+        private static void DisposeDevice(MMDevice device)
         {
-            if (device != null)
-            {
-                device.AudioEndpointVolume.Dispose();
-                device.Dispose();
-            }
+            if (device == null)
+                return;
+
+            device.AudioEndpointVolume.Dispose();
+            device.Dispose();
         }
 
-        private void handleExit(object sender, EventArgs e)
+        private void HandleExit(object sender, EventArgs e)
         {
-            tbIcon.Visible = false;
-            refreshTimer.Stop();
+            _icon.Visible = false;
+            _refreshTimer.Stop();
             Application.Current.Shutdown();
         }
     }
