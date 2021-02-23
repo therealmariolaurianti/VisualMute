@@ -5,7 +5,7 @@ namespace VisualMute.Workers
 {
     public class HotkeyManager : NativeWindow, IDisposable
     {
-        private readonly int _hotKeyConstant = 786;
+        private const int _hotKeyConstant = 786;
         private readonly Context context;
         private bool _isMuted;
 

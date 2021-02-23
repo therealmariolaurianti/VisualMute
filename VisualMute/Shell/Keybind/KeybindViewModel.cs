@@ -12,9 +12,9 @@ namespace VisualMute.Shell.Keybind
     {
         private Keys _selectedKey;
 
-        public KeybindViewModel()
+        public KeybindViewModel(Keys keybind)
         {
-            SelectedKey = Settings.Default.KeyBind;
+            SelectedKey = keybind;
         }
 
         public List<Keys> Keys => Enum
@@ -50,7 +50,7 @@ namespace VisualMute.Shell.Keybind
         public override string DisplayName
         {
             get => "";
-            set { throw new NotImplementedException(); }
+            set => throw new NotImplementedException();
         }
     }
 }

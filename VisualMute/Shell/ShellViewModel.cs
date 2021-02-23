@@ -16,6 +16,8 @@ namespace VisualMute.Shell
         private readonly Context _context;
 
         private readonly GraphPlotter _graphPlotter;
+
+        private readonly IWindowManager _windowManager;
         private bool _isMuted;
 
         public ShellViewModel(GraphPlotter graphPlotter, Context context, IWindowManager windowManager)
@@ -80,15 +82,13 @@ namespace VisualMute.Shell
             NotifyOfPropertyChange(nameof(ForegroundColor));
         }
 
-        private readonly IWindowManager _windowManager;
-        
         public void DoChangeKeybind()
         {
-            var keybindViewModel = new KeybindViewModel();
+            var keybindViewModel = new KeybindViewModel(_context.KeyBind);
             var result = _windowManager.ShowDialog(keybindViewModel);
-            if (!(result is true)) 
+            if (!(result is true))
                 return;
-            
+
             _context.UpdateKeyBind(keybindViewModel.SelectedKey);
             NotifyOfPropertyChange(nameof(KeyBind));
         }
